@@ -1,0 +1,677 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище RestaurantModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="id_category" />
+          </Key>
+          <Property Name="id_category" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Dish">
+          <Key>
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="id_dish" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_category" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="calories" Type="int" Nullable="false" />
+          <Property Name="on_sale" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Ingredient">
+          <Key>
+            <PropertyRef Name="id_ingredient" />
+          </Key>
+          <Property Name="id_ingredient" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="price" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="id_order" />
+          </Key>
+          <Property Name="id_order" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_worker" Type="int" Nullable="false" />
+          <Property Name="table_num" Type="int" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="price" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order_cart">
+          <Key>
+            <PropertyRef Name="id_dish" />
+            <PropertyRef Name="id_order" />
+          </Key>
+          <Property Name="id_dish" Type="int" Nullable="false" />
+          <Property Name="id_order" Type="int" Nullable="false" />
+          <Property Name="amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Permission_table">
+          <Key>
+            <PropertyRef Name="id_table" />
+            <PropertyRef Name="id_position" />
+          </Key>
+          <Property Name="id_table" Type="int" Nullable="false" />
+          <Property Name="id_position" Type="int" Nullable="false" />
+          <Property Name="rule_update" Type="bit" Nullable="false" />
+          <Property Name="rule_delete" Type="bit" Nullable="false" />
+          <Property Name="rule_insert" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="id_position" />
+          </Key>
+          <Property Name="id_position" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="salary" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="date" />
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="id_dish" Type="int" Nullable="false" />
+          <Property Name="price" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="structure_dish">
+          <Key>
+            <PropertyRef Name="id_dish" />
+            <PropertyRef Name="id_ingredient" />
+          </Key>
+          <Property Name="id_dish" Type="int" Nullable="false" />
+          <Property Name="id_ingredient" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="table">
+          <Key>
+            <PropertyRef Name="id_table" />
+          </Key>
+          <Property Name="id_table" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Worker">
+          <Key>
+            <PropertyRef Name="id_worker" />
+          </Key>
+          <Property Name="id_worker" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_position" Type="int" Nullable="false" />
+          <Property Name="full_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="birth_date" Type="date" Nullable="false" />
+          <Property Name="login" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pass" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_dish_category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="id_category" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="id_category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_cart_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Order_cart" Type="Self.Order_cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="Order_cart">
+              <PropertyRef Name="id_dish" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_cart_order">
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
+          <End Role="Order_cart" Type="Self.Order_cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="id_order" />
+            </Principal>
+            <Dependent Role="Order_cart">
+              <PropertyRef Name="id_order" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_worker">
+          <End Role="Worker" Type="Self.Worker" Multiplicity="1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="id_worker" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="id_worker" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permission_table_position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Permission_table" Type="Self.Permission_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="id_position" />
+            </Principal>
+            <Dependent Role="Permission_table">
+              <PropertyRef Name="id_position" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permission_table_table">
+          <End Role="table" Type="Self.table" Multiplicity="1" />
+          <End Role="Permission_table" Type="Self.Permission_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="table">
+              <PropertyRef Name="id_table" />
+            </Principal>
+            <Dependent Role="Permission_table">
+              <PropertyRef Name="id_table" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_price_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Price" Type="Self.Price" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="Price">
+              <PropertyRef Name="id_dish" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_structure_dish_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="structure_dish" Type="Self.structure_dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="structure_dish">
+              <PropertyRef Name="id_dish" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_structure_dish_ingredient">
+          <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="1" />
+          <End Role="structure_dish" Type="Self.structure_dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ingredient">
+              <PropertyRef Name="id_ingredient" />
+            </Principal>
+            <Dependent Role="structure_dish">
+              <PropertyRef Name="id_ingredient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_worker_position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Worker" Type="Self.Worker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="id_position" />
+            </Principal>
+            <Dependent Role="Worker">
+              <PropertyRef Name="id_position" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище RestaurantModelContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dish" EntityType="Self.Dish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ingredient" EntityType="Self.Ingredient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order_cart" EntityType="Self.Order_cart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission_table" EntityType="Self.Permission_table" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Position" EntityType="Self.Position" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Price" EntityType="Self.Price" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="structure_dish" EntityType="Self.structure_dish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="table" EntityType="Self.table" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Worker" EntityType="Self.Worker" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dish_category" Association="Self.FK_dish_category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Dish" EntitySet="Dish" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_cart_dish" Association="Self.FK_order_cart_dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="Order_cart" EntitySet="Order_cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_cart_order" Association="Self.FK_order_cart_order">
+            <End Role="Order" EntitySet="Order" />
+            <End Role="Order_cart" EntitySet="Order_cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_worker" Association="Self.FK_order_worker">
+            <End Role="Worker" EntitySet="Worker" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permission_table_position" Association="Self.FK_Permission_table_position">
+            <End Role="Position" EntitySet="Position" />
+            <End Role="Permission_table" EntitySet="Permission_table" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permission_table_table" Association="Self.FK_Permission_table_table">
+            <End Role="table" EntitySet="table" />
+            <End Role="Permission_table" EntitySet="Permission_table" />
+          </AssociationSet>
+          <AssociationSet Name="FK_price_dish" Association="Self.FK_price_dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="Price" EntitySet="Price" />
+          </AssociationSet>
+          <AssociationSet Name="FK_structure_dish_dish" Association="Self.FK_structure_dish_dish">
+            <End Role="Dish" EntitySet="Dish" />
+            <End Role="structure_dish" EntitySet="structure_dish" />
+          </AssociationSet>
+          <AssociationSet Name="FK_structure_dish_ingredient" Association="Self.FK_structure_dish_ingredient">
+            <End Role="Ingredient" EntitySet="Ingredient" />
+            <End Role="structure_dish" EntitySet="structure_dish" />
+          </AssociationSet>
+          <AssociationSet Name="FK_worker_position" Association="Self.FK_worker_position">
+            <End Role="Position" EntitySet="Position" />
+            <End Role="Worker" EntitySet="Worker" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RestaurantModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="id_category" />
+          </Key>
+          <Property Name="id_category" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Dishes" Relationship="Self.FK_dish_category" FromRole="Category" ToRole="Dish" />
+        </EntityType>
+        <EntityType Name="Dish">
+          <Key>
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="id_dish" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_category" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="calories" Type="Int32" Nullable="false" />
+          <Property Name="on_sale" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_dish_category" FromRole="Dish" ToRole="Category" />
+          <NavigationProperty Name="Order_cart" Relationship="Self.FK_order_cart_dish" FromRole="Dish" ToRole="Order_cart" />
+          <NavigationProperty Name="Prices" Relationship="Self.FK_price_dish" FromRole="Dish" ToRole="Price" />
+          <NavigationProperty Name="Ingredients" Relationship="Self.structure_dish" FromRole="Dish" ToRole="Ingredient" />
+        </EntityType>
+        <EntityType Name="Ingredient">
+          <Key>
+            <PropertyRef Name="id_ingredient" />
+          </Key>
+          <Property Name="id_ingredient" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="price" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dishes" Relationship="Self.structure_dish" FromRole="Ingredient" ToRole="Dish" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="id_order" />
+          </Key>
+          <Property Name="id_order" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_worker" Type="Int32" Nullable="false" />
+          <Property Name="table_num" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="price" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order_cart" Relationship="Self.FK_order_cart_order" FromRole="Order" ToRole="Order_cart" />
+          <NavigationProperty Name="Worker" Relationship="Self.FK_order_worker" FromRole="Order" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="Order_cart">
+          <Key>
+            <PropertyRef Name="id_dish" />
+            <PropertyRef Name="id_order" />
+          </Key>
+          <Property Name="id_dish" Type="Int32" Nullable="false" />
+          <Property Name="id_order" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dish" Relationship="Self.FK_order_cart_dish" FromRole="Order_cart" ToRole="Dish" />
+          <NavigationProperty Name="Order" Relationship="Self.FK_order_cart_order" FromRole="Order_cart" ToRole="Order" />
+        </EntityType>
+        <EntityType Name="Permission_table">
+          <Key>
+            <PropertyRef Name="id_table" />
+            <PropertyRef Name="id_position" />
+          </Key>
+          <Property Name="id_table" Type="Int32" Nullable="false" />
+          <Property Name="id_position" Type="Int32" Nullable="false" />
+          <Property Name="rule_update" Type="Boolean" Nullable="false" />
+          <Property Name="rule_delete" Type="Boolean" Nullable="false" />
+          <Property Name="rule_insert" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Position" Relationship="Self.FK_Permission_table_position" FromRole="Permission_table" ToRole="Position" />
+          <NavigationProperty Name="table" Relationship="Self.FK_Permission_table_table" FromRole="Permission_table" ToRole="table" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="id_position" />
+          </Key>
+          <Property Name="id_position" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="salary" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Permission_table" Relationship="Self.FK_Permission_table_position" FromRole="Position" ToRole="Permission_table" />
+          <NavigationProperty Name="Workers" Relationship="Self.FK_worker_position" FromRole="Position" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="date" />
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="id_dish" Type="Int32" Nullable="false" />
+          <Property Name="price1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Dish" Relationship="Self.FK_price_dish" FromRole="Price" ToRole="Dish" />
+        </EntityType>
+        <EntityType Name="table">
+          <Key>
+            <PropertyRef Name="id_table" />
+          </Key>
+          <Property Name="id_table" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Permission_table" Relationship="Self.FK_Permission_table_table" FromRole="table" ToRole="Permission_table" />
+        </EntityType>
+        <EntityType Name="Worker">
+          <Key>
+            <PropertyRef Name="id_worker" />
+          </Key>
+          <Property Name="id_worker" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_position" Type="Int32" Nullable="false" />
+          <Property Name="full_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="birth_date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_order_worker" FromRole="Worker" ToRole="Order" />
+          <NavigationProperty Name="Position" Relationship="Self.FK_worker_position" FromRole="Worker" ToRole="Position" />
+        </EntityType>
+        <Association Name="FK_dish_category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="id_category" />
+            </Principal>
+            <Dependent Role="Dish">
+              <PropertyRef Name="id_category" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_cart_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Order_cart" Type="Self.Order_cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="Order_cart">
+              <PropertyRef Name="id_dish" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_price_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Price" Type="Self.Price" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="Price">
+              <PropertyRef Name="id_dish" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_cart_order">
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
+          <End Role="Order_cart" Type="Self.Order_cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="id_order" />
+            </Principal>
+            <Dependent Role="Order_cart">
+              <PropertyRef Name="id_order" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_worker">
+          <End Role="Worker" Type="Self.Worker" Multiplicity="1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="id_worker" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="id_worker" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permission_table_position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Permission_table" Type="Self.Permission_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="id_position" />
+            </Principal>
+            <Dependent Role="Permission_table">
+              <PropertyRef Name="id_position" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Permission_table_table">
+          <End Role="table" Type="Self.table" Multiplicity="1" />
+          <End Role="Permission_table" Type="Self.Permission_table" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="table">
+              <PropertyRef Name="id_table" />
+            </Principal>
+            <Dependent Role="Permission_table">
+              <PropertyRef Name="id_table" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_worker_position">
+          <End Role="Position" Type="Self.Position" Multiplicity="1" />
+          <End Role="Worker" Type="Self.Worker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="id_position" />
+            </Principal>
+            <Dependent Role="Worker">
+              <PropertyRef Name="id_position" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="structure_dish">
+          <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
+          <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="Context" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Dishes" EntityType="Self.Dish" />
+          <EntitySet Name="Ingredients" EntityType="Self.Ingredient" />
+          <EntitySet Name="Orders" EntityType="Self.Order" />
+          <EntitySet Name="Order_cart" EntityType="Self.Order_cart" />
+          <EntitySet Name="Permission_table" EntityType="Self.Permission_table" />
+          <EntitySet Name="Positions" EntityType="Self.Position" />
+          <EntitySet Name="Prices" EntityType="Self.Price" />
+          <EntitySet Name="tables" EntityType="Self.table" />
+          <EntitySet Name="Workers" EntityType="Self.Worker" />
+          <AssociationSet Name="FK_dish_category" Association="Self.FK_dish_category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Dish" EntitySet="Dishes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_cart_dish" Association="Self.FK_order_cart_dish">
+            <End Role="Dish" EntitySet="Dishes" />
+            <End Role="Order_cart" EntitySet="Order_cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_price_dish" Association="Self.FK_price_dish">
+            <End Role="Dish" EntitySet="Dishes" />
+            <End Role="Price" EntitySet="Prices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_cart_order" Association="Self.FK_order_cart_order">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="Order_cart" EntitySet="Order_cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_order_worker" Association="Self.FK_order_worker">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permission_table_position" Association="Self.FK_Permission_table_position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Permission_table" EntitySet="Permission_table" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Permission_table_table" Association="Self.FK_Permission_table_table">
+            <End Role="table" EntitySet="tables" />
+            <End Role="Permission_table" EntitySet="Permission_table" />
+          </AssociationSet>
+          <AssociationSet Name="FK_worker_position" Association="Self.FK_worker_position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Worker" EntitySet="Workers" />
+          </AssociationSet>
+          <AssociationSet Name="structure_dish" Association="Self.structure_dish">
+            <End Role="Dish" EntitySet="Dishes" />
+            <End Role="Ingredient" EntitySet="Ingredients" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище RestaurantModelContainer" CdmEntityContainer="Context">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="RestaurantModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="id_category" ColumnName="id_category" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dishes">
+            <EntityTypeMapping TypeName="RestaurantModel.Dish">
+              <MappingFragment StoreEntitySet="Dish">
+                <ScalarProperty Name="id_dish" ColumnName="id_dish" />
+                <ScalarProperty Name="id_category" ColumnName="id_category" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="calories" ColumnName="calories" />
+                <ScalarProperty Name="on_sale" ColumnName="on_sale" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ingredients">
+            <EntityTypeMapping TypeName="RestaurantModel.Ingredient">
+              <MappingFragment StoreEntitySet="Ingredient">
+                <ScalarProperty Name="id_ingredient" ColumnName="id_ingredient" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="RestaurantModel.Order">
+              <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="id_order" ColumnName="id_order" />
+                <ScalarProperty Name="id_worker" ColumnName="id_worker" />
+                <ScalarProperty Name="table_num" ColumnName="table_num" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Order_cart">
+            <EntityTypeMapping TypeName="RestaurantModel.Order_cart">
+              <MappingFragment StoreEntitySet="Order_cart">
+                <ScalarProperty Name="id_dish" ColumnName="id_dish" />
+                <ScalarProperty Name="id_order" ColumnName="id_order" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permission_table">
+            <EntityTypeMapping TypeName="RestaurantModel.Permission_table">
+              <MappingFragment StoreEntitySet="Permission_table">
+                <ScalarProperty Name="id_table" ColumnName="id_table" />
+                <ScalarProperty Name="id_position" ColumnName="id_position" />
+                <ScalarProperty Name="rule_update" ColumnName="rule_update" />
+                <ScalarProperty Name="rule_delete" ColumnName="rule_delete" />
+                <ScalarProperty Name="rule_insert" ColumnName="rule_insert" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Positions">
+            <EntityTypeMapping TypeName="RestaurantModel.Position">
+              <MappingFragment StoreEntitySet="Position">
+                <ScalarProperty Name="id_position" ColumnName="id_position" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="salary" ColumnName="salary" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prices">
+            <EntityTypeMapping TypeName="RestaurantModel.Price">
+              <MappingFragment StoreEntitySet="Price">
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="id_dish" ColumnName="id_dish" />
+                <ScalarProperty Name="price1" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tables">
+            <EntityTypeMapping TypeName="RestaurantModel.table">
+              <MappingFragment StoreEntitySet="table">
+                <ScalarProperty Name="id_table" ColumnName="id_table" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Workers">
+            <EntityTypeMapping TypeName="RestaurantModel.Worker">
+              <MappingFragment StoreEntitySet="Worker">
+                <ScalarProperty Name="id_worker" ColumnName="id_worker" />
+                <ScalarProperty Name="id_position" ColumnName="id_position" />
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="birth_date" ColumnName="birth_date" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="structure_dish" TypeName="RestaurantModel.structure_dish" StoreEntitySet="structure_dish">
+            <EndProperty Name="Dish">
+              <ScalarProperty Name="id_dish" ColumnName="id_dish" />
+            </EndProperty>
+            <EndProperty Name="Ingredient">
+              <ScalarProperty Name="id_ingredient" ColumnName="id_ingredient" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
